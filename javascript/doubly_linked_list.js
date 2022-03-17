@@ -46,6 +46,9 @@ class DoublyLinkedList {
   // add the node to the start of the list, no nodes should be removed
   addFirst(node) {
     node.next = this.head;
+    if (this.head !== null) {
+      this.head.prev = node
+    }
     this.head = node;
   }
 
@@ -60,6 +63,7 @@ class DoublyLinkedList {
     this.iterate(currNode => {
       if (currNode.next === null) {
         currNode.next = node;
+        node.prev = currNode
         return true;
       }
     });
@@ -72,6 +76,7 @@ class DoublyLinkedList {
 
     if (this.head !== null) {
       this.head = this.head.next;
+      this.head.prev = null
     }
 
     return oldHead;
@@ -107,8 +112,12 @@ class DoublyLinkedList {
 
     this.iterate((currNode, count) => {
       if (count === idx - 1) {
-        node.next = currNode.next.next;
+        node.next = currNode.next.next
         currNode.next = node;
+        if (currNode.next.next !== null) {
+          currNode.next.next.prev = node
+        }
+        node.prev = currNode
 
         return true;
       }
@@ -131,6 +140,11 @@ class DoublyLinkedList {
         currNode.next = node;
         node.next = oldNext;
 
+        node.prev = currNode
+        if (oldNext !== null) {
+          oldNext.prev = node;
+        }
+
         return true;
       }
     });
@@ -148,6 +162,10 @@ class DoublyLinkedList {
       if (count === idx - 1) {
         oldNode = node.next;
         node.next = node.next.next;
+        
+        if (node.next !== null) {
+          node.next.prev = node
+        }
 
         return true;
       }
@@ -165,11 +183,16 @@ class Node {
   constructor(value = null, next = null) {
     this.value = value;
     this.next = next;
+    this.prev = null;
   }
 }
 
 if (require.main === module) {
   // add your own tests in here
+  node = new Node('zeroth')
+  console.log('Expect node.prev to be null:', node.next === null)
+  console.log('Expect node.next to be null:', node.prev === null)
+  console.log('Expect node.value to be zeroth:', node.value === 'zeroth')
   
 }
 
